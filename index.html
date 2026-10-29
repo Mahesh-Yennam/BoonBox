@@ -63,13 +63,15 @@
         <!-- The 3D Box Construction -->
         <div class="box-mesh" id="box-mesh">
           
-          <!-- Pillar of light radiating upward on open -->
+          <!-- Volumetric Light Rays on open -->
           <div class="light-pillar" id="light-pillar"></div>
+          <div class="light-ray ray-left"></div>
+          <div class="light-ray ray-right"></div>
 
-          <!-- Box Base (Bottom Solid Hull) -->
+          <!-- Box Base (Solid Hull & Rich Interior Cavity) -->
           <div class="box-base">
             
-            <!-- Front Face -->
+            <!-- Outer Front Face -->
             <div class="face face-front">
               <div class="gold-strap strap-left"></div>
               <div class="gold-strap strap-right"></div>
@@ -83,7 +85,7 @@
               </div>
             </div>
 
-            <!-- Back Face -->
+            <!-- Outer Back Face -->
             <div class="face face-back">
               <div class="gold-strap strap-left"></div>
               <div class="gold-strap strap-right"></div>
@@ -91,7 +93,7 @@
               <div class="hinge-bracket hinge-r"></div>
             </div>
 
-            <!-- Left Face -->
+            <!-- Outer Left Face -->
             <div class="face face-left">
               <div class="metal-corner corner-bl"></div>
               <div class="metal-corner corner-br"></div>
@@ -100,7 +102,7 @@
               </div>
             </div>
 
-            <!-- Right Face -->
+            <!-- Outer Right Face -->
             <div class="face face-right">
               <div class="metal-corner corner-bl"></div>
               <div class="metal-corner corner-br"></div>
@@ -109,12 +111,52 @@
               </div>
             </div>
 
-            <!-- Bottom Face -->
+            <!-- Outer Bottom Face -->
             <div class="face face-bottom"></div>
 
-            <!-- Interior Tray (holds glowing crystal) -->
-            <div class="face face-interior">
-              <div class="core-crystal"></div>
+            <!-- Solid Golden Top Rim Bevels -->
+            <div class="rim-bevel rim-front"></div>
+            <div class="rim-bevel rim-back"></div>
+            <div class="rim-bevel rim-left"></div>
+            <div class="rim-bevel rim-right"></div>
+
+            <!-- ================= INTERIOR CAVITY (Seen when open!) ================= -->
+            
+            <!-- Inner Velvet Floor & Golden Treasure Pile -->
+            <div class="inner-face inner-floor">
+              <div class="treasure-bed">
+                <div class="gold-coin c1"></div>
+                <div class="gold-coin c2"></div>
+                <div class="gold-coin c3"></div>
+                <div class="gold-coin c4"></div>
+                <div class="gold-coin c5"></div>
+                <div class="stardust-gem g1"></div>
+                <div class="stardust-gem g2"></div>
+                <div class="stardust-gem g3"></div>
+              </div>
+              <div class="core-crystal" id="core-crystal">
+                <div class="crystal-core-inner">✦</div>
+              </div>
+            </div>
+
+            <!-- Inner Front Wall -->
+            <div class="inner-face inner-front">
+              <div class="inner-velvet-ribbon"></div>
+            </div>
+
+            <!-- Inner Back Wall -->
+            <div class="inner-face inner-back">
+              <div class="inner-velvet-ribbon"></div>
+            </div>
+
+            <!-- Inner Left Wall -->
+            <div class="inner-face inner-left">
+              <div class="inner-velvet-ribbon"></div>
+            </div>
+
+            <!-- Inner Right Wall -->
+            <div class="inner-face inner-right">
+              <div class="inner-velvet-ribbon"></div>
             </div>
 
           </div>
@@ -122,10 +164,10 @@
           <!-- Box Lid Hinge Pivot (Hinged at top-back edge of base) -->
           <div class="lid-hinge" id="lid-hinge">
             
-            <!-- Solid Closed Lid -->
+            <!-- Solid Closed/Open Lid -->
             <div class="box-lid" id="box-lid">
               
-              <!-- Lid Top Face (Solid cap covering the box) -->
+              <!-- Outer Lid Top Face (Solid cap covering the box when closed) -->
               <div class="lid-face lid-face-top">
                 <div class="gold-strap strap-left"></div>
                 <div class="gold-strap strap-right"></div>
@@ -136,7 +178,7 @@
                 </div>
               </div>
 
-              <!-- Lid Front Face -->
+              <!-- Outer Lid Front Face -->
               <div class="lid-face lid-face-front">
                 <div class="gold-strap strap-left"></div>
                 <div class="gold-strap strap-right"></div>
@@ -145,21 +187,42 @@
                 </div>
               </div>
 
-              <!-- Lid Back Face -->
+              <!-- Outer Lid Back Face -->
               <div class="lid-face lid-face-back">
                 <div class="gold-strap strap-left"></div>
                 <div class="gold-strap strap-right"></div>
               </div>
 
-              <!-- Lid Left Face -->
+              <!-- Outer Lid Left Face -->
               <div class="lid-face lid-face-left">
                 <div class="metal-corner corner-tl"></div>
               </div>
 
-              <!-- Lid Right Face -->
+              <!-- Outer Lid Right Face -->
               <div class="lid-face lid-face-right">
                 <div class="metal-corner corner-tr"></div>
               </div>
+
+              <!-- ================= INNER LID (Seen when Lid Swings Open!) ================= -->
+              <div class="lid-inner-face lid-inner-top">
+                <div class="quilted-cushion">
+                  <div class="tuft-row">
+                    <span class="tuft-dot">✦</span>
+                    <span class="tuft-dot">✦</span>
+                    <span class="tuft-dot">✦</span>
+                  </div>
+                  <div class="inner-lid-seal">✧ CELESTIAL BOON ✧</div>
+                  <div class="tuft-row">
+                    <span class="tuft-dot">✦</span>
+                    <span class="tuft-dot">✦</span>
+                    <span class="tuft-dot">✦</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="lid-inner-face lid-inner-front"></div>
+              <div class="lid-inner-face lid-inner-left"></div>
+              <div class="lid-inner-face lid-inner-right"></div>
 
             </div>
 
