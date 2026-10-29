@@ -1,0 +1,1152 @@
+/* ==========================================================================
+   BoonBox — Master Stylesheet
+   Cosmic Fantasy UI, 3D CSS Chest, Glassmorphic Cards & Glowing Animations
+   ========================================================================== */
+
+:root {
+  --font-serif: 'Cinzel', serif;
+  --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  --bg-deep: #060713;
+  --bg-surface: rgba(15, 18, 37, 0.85);
+  --border-glass: rgba(255, 255, 255, 0.12);
+
+  --color-gold: #f59e0b;
+  --color-gold-bright: #fbbf24;
+  --color-gold-dark: #b45309;
+  --color-amethyst: #a855f7;
+  --color-cyan: #38bdf8;
+  --color-emerald: #10b981;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-deep);
+  color: #f1f5f9;
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow-x: hidden;
+  position: relative;
+  user-select: none;
+}
+
+/* --------------------------------------------------------------------------
+   Canvas & Ambient Lighting
+   -------------------------------------------------------------------------- */
+#particle-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.ambient-glow {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.35;
+}
+
+.glow-top-left {
+  top: -150px;
+  left: -150px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.6) 0%, rgba(56, 189, 248, 0) 70%);
+}
+
+.glow-bottom-right {
+  bottom: -150px;
+  right: -150px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.45) 0%, rgba(168, 85, 247, 0) 70%);
+}
+
+/* --------------------------------------------------------------------------
+   Header
+   -------------------------------------------------------------------------- */
+.app-header {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 2rem;
+  backdrop-filter: blur(8px);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.brand-gem {
+  color: var(--color-gold-bright);
+  font-size: 1.4rem;
+  animation: pulse-gem 3s infinite ease-in-out;
+}
+
+.brand-title {
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  background: linear-gradient(135deg, #ffffff 30%, var(--color-gold-bright) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand-tag {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 0.2rem 0.6rem;
+  background: rgba(168, 85, 247, 0.2);
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  border-radius: 999px;
+  color: #d8b4fe;
+}
+
+.icon-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-glass);
+  color: #e2e8f0;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  transition: all 0.25s ease;
+}
+
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: scale(1.05);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* --------------------------------------------------------------------------
+   Stage / Main Viewport
+   -------------------------------------------------------------------------- */
+.magic-stage {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  padding: 1rem;
+  text-align: center;
+}
+
+.stage-intro {
+  margin-bottom: 2rem;
+  max-width: 600px;
+}
+
+.sub-headline {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--color-cyan);
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+}
+
+.main-prompt {
+  font-family: var(--font-serif);
+  font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+  font-weight: 600;
+  color: #ffffff;
+  text-shadow: 0 4px 20px rgba(168, 85, 247, 0.3);
+  transition: all 0.3s ease;
+}
+
+/* --------------------------------------------------------------------------
+   3D Chest Viewport & Perspective
+   -------------------------------------------------------------------------- */
+.box-viewport {
+  position: relative;
+  width: 360px;
+  height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1100px;
+  margin: 1.5rem 0;
+}
+
+/* Floor Aura Rings & Shadow */
+.floor-aura-rings {
+  position: absolute;
+  bottom: 20px;
+  width: 320px;
+  height: 320px;
+  transform: rotateX(75deg);
+  pointer-events: none;
+}
+
+.floor-shadow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 220px;
+  height: 160px;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0) 70%);
+  filter: blur(14px);
+  transition: all 0.5s ease;
+}
+
+.aura-ring {
+  position: absolute;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px dashed rgba(245, 158, 11, 0.35);
+  box-shadow: 0 0 35px rgba(168, 85, 247, 0.25);
+  transition: all 0.5s ease;
+}
+
+.ring-outer {
+  width: 300px;
+  height: 300px;
+  border-color: rgba(56, 189, 248, 0.4);
+  animation: spin-clockwise 25s linear infinite;
+}
+
+.ring-mid {
+  width: 220px;
+  height: 220px;
+  border: 2px solid rgba(245, 158, 11, 0.4);
+  animation: spin-counter 18s linear infinite;
+}
+
+.ring-inner {
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.35) 0%, rgba(0, 0, 0, 0) 70%);
+}
+
+/* 3D Chest Container & Levitation */
+.chest-3d-wrapper {
+  position: relative;
+  width: 220px;
+  height: 160px;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  outline: none;
+  animation: box-float 4.5s ease-in-out infinite;
+  transition: transform 0.4s ease;
+}
+
+.chest-3d-wrapper:hover {
+  transform: translateY(-8px) scale(1.02);
+}
+
+.chest-3d-wrapper:hover .magic-gem {
+  box-shadow: 0 0 25px var(--color-cyan), 0 0 50px var(--color-cyan);
+}
+
+.chest-3d-wrapper:hover .floor-shadow {
+  transform: translate(-50%, -50%) scale(0.9);
+  opacity: 0.7;
+}
+
+/* Mesh & Rotation Perspective */
+.box-mesh {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(-16deg) rotateY(28deg);
+  transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Light Pillar Erupting from Box on Open */
+.light-pillar {
+  position: absolute;
+  left: -80px;
+  top: -55px;
+  width: 160px;
+  height: 420px;
+  transform: translate3d(0, -100%, 0) scaleY(0);
+  transform-origin: bottom center;
+  background: linear-gradient(to top, rgba(251, 191, 36, 0.9) 0%, rgba(168, 85, 247, 0.6) 45%, rgba(56, 189, 248, 0) 100%);
+  filter: blur(10px);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 20;
+  transition: all 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+
+/* --------------------------------------------------------------------------
+   Box Base (Solid Bottom Hull)
+   Width: 210px, Height: 110px, Depth: 150px
+   -------------------------------------------------------------------------- */
+.box-base {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+}
+
+/* Universal Casket Face Styling */
+.face {
+  position: absolute;
+  background: radial-gradient(circle at 50% 30%, #1e2448 0%, #11142c 60%, #080918 100%);
+  border: 3px solid #d97706;
+  box-shadow: inset 0 0 0 1px #fef08a, inset 0 0 20px rgba(0, 0, 0, 0.9), 0 0 10px rgba(0, 0, 0, 0.6);
+  backface-visibility: hidden;
+}
+
+/* Base Face Positions */
+.face-front {
+  width: 210px;
+  height: 110px;
+  left: -105px;
+  top: -55px;
+  transform: translateZ(75px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.face-back {
+  width: 210px;
+  height: 110px;
+  left: -105px;
+  top: -55px;
+  transform: rotateY(180deg) translateZ(75px);
+}
+
+.face-left {
+  width: 150px;
+  height: 110px;
+  left: -75px;
+  top: -55px;
+  transform: rotateY(-90deg) translateZ(105px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.face-right {
+  width: 150px;
+  height: 110px;
+  left: -75px;
+  top: -55px;
+  transform: rotateY(90deg) translateZ(105px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.face-bottom {
+  width: 210px;
+  height: 150px;
+  left: -105px;
+  top: -75px;
+  transform: rotateX(-90deg) translateZ(55px);
+  background: #080912;
+  border-color: #78350f;
+}
+
+.face-interior {
+  width: 206px;
+  height: 146px;
+  left: -103px;
+  top: -73px;
+  transform: rotateX(90deg) translateZ(-45px);
+  background: #0d061c;
+  border: 2px solid #581c87;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.core-crystal {
+  width: 60px;
+  height: 60px;
+  background: radial-gradient(circle, #fbbf24 0%, rgba(168, 85, 247, 0.7) 50%, transparent 80%);
+  border-radius: 50%;
+  filter: blur(6px);
+  opacity: 0.3;
+  transition: opacity 0.5s ease;
+}
+
+/* --------------------------------------------------------------------------
+   Ornate Metal Straps, Filigree & Lock Details
+   -------------------------------------------------------------------------- */
+.gold-strap {
+  position: absolute;
+  background: linear-gradient(to right, #b45309 0%, #fbbf24 50%, #b45309 100%);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+}
+
+/* Vertical Straps on front/back/top */
+.face-front .gold-strap,
+.face-back .gold-strap {
+  width: 18px;
+  height: 100%;
+  top: 0;
+}
+
+.strap-left { left: 34px; }
+.strap-right { right: 34px; }
+
+/* Metallic Corner Filigree */
+.metal-corner {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border: 4px solid var(--color-gold);
+  pointer-events: none;
+}
+
+.corner-tl { top: 0; left: 0; border-right: none; border-bottom: none; }
+.corner-tr { top: 0; right: 0; border-left: none; border-bottom: none; }
+.corner-bl { bottom: 0; left: 0; border-right: none; border-top: none; }
+.corner-br { bottom: 0; right: 0; border-left: none; border-top: none; }
+
+/* Front Lock Plate */
+.lock-plate {
+  position: absolute;
+  top: 0;
+  width: 48px;
+  height: 52px;
+  background: linear-gradient(135deg, #fbbf24 0%, #d97706 60%, #78350f 100%);
+  border: 2px solid #fef08a;
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+.lock-keyhole {
+  width: 12px;
+  height: 16px;
+  background: #000;
+  border-radius: 6px 6px 2px 2px;
+  box-shadow: inset 0 0 4px #000;
+}
+
+.rune-glyph {
+  font-size: 0.9rem;
+  color: #fef08a;
+  text-shadow: 0 0 6px #f59e0b;
+}
+
+/* Side Carrying Rings */
+.chest-handle {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.handle-ring {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 4px solid var(--color-gold);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.9);
+}
+
+/* Back Hinges */
+.hinge-bracket {
+  position: absolute;
+  top: 0;
+  width: 20px;
+  height: 25px;
+  background: linear-gradient(to bottom, #f59e0b, #78350f);
+  border: 1px solid #fef08a;
+}
+.hinge-l { left: 33px; }
+.hinge-r { right: 33px; }
+
+/* --------------------------------------------------------------------------
+   Box Lid Hinge & Solid Casket Lid
+   Hinge anchor at top-back edge of base (Y = -55px, Z = -75px)
+   Lid: Width: 216px, Height: 40px, Depth: 156px
+   -------------------------------------------------------------------------- */
+.lid-hinge {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  transform-origin: 0 0 0;
+  transform: translate3d(0, -55px, -75px) rotateX(0deg);
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.box-lid {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+}
+
+/* Universal Lid Face Styling */
+.lid-face {
+  position: absolute;
+  background: radial-gradient(circle at 50% 40%, #252b57 0%, #151835 60%, #0a0c1c 100%);
+  border: 3px solid #f59e0b;
+  box-shadow: inset 0 0 0 1px #fef08a, inset 0 0 16px rgba(0, 0, 0, 0.8);
+  backface-visibility: hidden;
+}
+
+/* 1. Lid Top (The Solid Cap completely sealing the box) */
+.lid-face-top {
+  width: 216px;
+  height: 156px;
+  left: -108px;
+  top: -78px;
+  transform: translate3d(0, -40px, 78px) rotateX(90deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lid-face-top .gold-strap {
+  width: 18px;
+  height: 100%;
+  top: 0;
+}
+
+.lid-crest {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--color-gold-bright);
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+  letter-spacing: 0.25em;
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.8);
+}
+
+.crest-rune {
+  font-size: 1.1rem;
+}
+
+/* 2. Lid Front */
+.lid-face-front {
+  width: 216px;
+  height: 40px;
+  left: -108px;
+  top: -20px;
+  transform: translate3d(0, -20px, 156px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lid-face-front .gold-strap {
+  width: 18px;
+  height: 100%;
+  top: 0;
+}
+
+/* Center Golden Clasp with Glowing Gem */
+.lid-clasp {
+  position: absolute;
+  bottom: -16px;
+  width: 44px;
+  height: 38px;
+  background: linear-gradient(135deg, #fbbf24 0%, #b45309 100%);
+  border: 2px solid #fef08a;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+
+.magic-gem {
+  width: 22px;
+  height: 22px;
+  background: radial-gradient(circle, #38bdf8 0%, #1e40af 100%);
+  border: 2px solid #ffffff;
+  transform: rotate(45deg);
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.8);
+  transition: all 0.3s ease;
+  animation: gem-glow 2.5s infinite alternate;
+}
+
+/* 3. Lid Back */
+.lid-face-back {
+  width: 216px;
+  height: 40px;
+  left: -108px;
+  top: -20px;
+  transform: translate3d(0, -20px, 0) rotateY(180deg);
+}
+
+.lid-face-back .gold-strap {
+  width: 18px;
+  height: 100%;
+  top: 0;
+}
+
+/* 4. Lid Left */
+.lid-face-left {
+  width: 156px;
+  height: 40px;
+  left: -78px;
+  top: -20px;
+  transform: translate3d(-108px, -20px, 78px) rotateY(-90deg);
+}
+
+/* 5. Lid Right */
+.lid-face-right {
+  width: 156px;
+  height: 40px;
+  left: -78px;
+  top: -20px;
+  transform: translate3d(108px, -20px, 78px) rotateY(90deg);
+}
+
+/* --------------------------------------------------------------------------
+   Box Animation States
+   -------------------------------------------------------------------------- */
+
+/* Shaking state during anticipation */
+.chest-3d-wrapper.shaking {
+  animation: box-shake 0.12s infinite linear !important;
+}
+
+.chest-3d-wrapper.shaking .magic-gem {
+  background: radial-gradient(circle, #f59e0b 0%, #b91c1c 100%);
+  box-shadow: 0 0 30px #f59e0b;
+}
+
+/* Opened state: Lid pivots back 125deg */
+.chest-3d-wrapper.opened .lid-hinge {
+  transform: translate3d(0, -55px, -75px) rotateX(-125deg);
+}
+
+.chest-3d-wrapper.opened .light-pillar {
+  transform: translate3d(0, -100%, 0) scaleY(1);
+  opacity: 1;
+}
+
+.chest-3d-wrapper.opened .core-crystal {
+  opacity: 1;
+  filter: blur(14px);
+}
+
+/* Cooldown (Sleeping) state */
+.chest-3d-wrapper.sleeping {
+  opacity: 0.85;
+  filter: grayscale(0.2) brightness(0.85);
+}
+
+.chest-3d-wrapper.sleeping .magic-gem {
+  background: radial-gradient(circle, #64748b 0%, #1e293b 100%);
+  box-shadow: 0 0 6px rgba(100, 116, 139, 0.4);
+  animation: none;
+}
+
+.chest-3d-wrapper.sleeping:hover {
+  transform: none;
+  cursor: not-allowed;
+}
+
+/* --------------------------------------------------------------------------
+   Cooldown Banner & Timer
+   -------------------------------------------------------------------------- */
+.cooldown-panel {
+  position: absolute;
+  bottom: -40px;
+  background: rgba(15, 18, 37, 0.88);
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px);
+  padding: 1rem 1.5rem;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 360px;
+  z-index: 15;
+  animation: slide-up 0.4s ease;
+}
+
+.cooldown-panel.hidden {
+  display: none;
+}
+
+.cooldown-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--color-cyan);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.35rem;
+}
+
+.cooldown-desc {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-bottom: 0.75rem;
+  line-height: 1.35;
+}
+
+.countdown-timer {
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  padding: 0.35rem 0.8rem;
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.view-reward-btn {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.3) 0%, rgba(56, 189, 248, 0.3) 100%);
+  border: 1px solid rgba(168, 85, 247, 0.6);
+  color: #ffffff;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.5rem 1.25rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.view-reward-btn:hover {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.5) 0%, rgba(56, 189, 248, 0.5) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+}
+
+/* Hint Pill */
+.hint-pill {
+  margin-top: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.4rem 1.1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+.hint-pill.hidden {
+  display: none;
+}
+
+.hint-pill .sparkle {
+  color: var(--color-gold);
+  font-size: 0.75rem;
+}
+
+/* --------------------------------------------------------------------------
+   Reward Presentation Modal & Card
+   -------------------------------------------------------------------------- */
+.reward-modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 1.25rem;
+  transition: opacity 0.4s ease;
+}
+
+.reward-modal-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.reward-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(4, 5, 12, 0.85);
+  backdrop-filter: blur(14px);
+}
+
+.reward-card {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 420px;
+  background: var(--bg-surface);
+  border-radius: 24px;
+  border: 1px solid var(--border-glass);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transform: scale(0.9) translateY(20px);
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.reward-modal-overlay:not(.hidden) .reward-card {
+  transform: scale(1) translateY(0);
+}
+
+/* Holographic Card Shine */
+.card-shine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 40%, rgba(255, 255, 255, 0.05) 80%);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.card-header {
+  padding: 1.25rem 1.5rem 0.8rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rarity-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+.card-category {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Card Media / Image */
+.card-media-wrapper {
+  position: relative;
+  width: 100%;
+  height: 210px;
+  overflow: hidden;
+  background: #000;
+}
+
+.card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.reward-card:hover .card-image {
+  transform: scale(1.05);
+}
+
+.image-gradient-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, var(--bg-surface) 5%, transparent 60%);
+}
+
+.card-icon-floating {
+  position: absolute;
+  bottom: 12px;
+  right: 20px;
+  font-size: 2.2rem;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.8));
+  animation: pulse-gem 2s infinite ease-in-out;
+}
+
+/* Card Body */
+.card-body {
+  padding: 1rem 1.75rem;
+  text-align: center;
+}
+
+.reward-title {
+  font-family: var(--font-serif);
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.25rem;
+}
+
+.reward-tagline {
+  font-size: 0.85rem;
+  color: var(--color-cyan);
+  font-weight: 500;
+  margin-bottom: 0.85rem;
+}
+
+.reward-divider {
+  color: var(--color-gold);
+  font-size: 0.65rem;
+  letter-spacing: 0.4em;
+  margin-bottom: 0.85rem;
+  opacity: 0.7;
+}
+
+.reward-quote {
+  font-style: italic;
+  font-size: 0.92rem;
+  color: #cbd5e1;
+  line-height: 1.5;
+  margin-bottom: 1.1rem;
+}
+
+.reward-stat-box {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-glass);
+  border-radius: 12px;
+  padding: 0.65rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-name {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stat-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-gold-bright);
+}
+
+/* Card Action */
+.card-footer {
+  padding: 0.5rem 1.75rem 1.5rem;
+}
+
+.claim-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--color-gold) 0%, #d97706 100%);
+  border: none;
+  color: #000;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.85rem;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.35);
+}
+
+.claim-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(245, 158, 11, 0.5);
+  background: linear-gradient(135deg, var(--color-gold-bright) 0%, var(--color-gold) 100%);
+}
+
+/* Dynamic Rarity Theming */
+.reward-card.rarity-common {
+  border-color: rgba(16, 185, 129, 0.4);
+  box-shadow: 0 20px 50px rgba(16, 185, 129, 0.2);
+}
+.reward-card.rarity-common .rarity-badge {
+  background: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.reward-card.rarity-rare {
+  border-color: rgba(59, 130, 246, 0.45);
+  box-shadow: 0 20px 50px rgba(59, 130, 246, 0.25);
+}
+.reward-card.rarity-rare .rarity-badge {
+  background: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+  border: 1px solid rgba(59, 130, 246, 0.4);
+}
+
+.reward-card.rarity-epic {
+  border-color: rgba(168, 85, 247, 0.55);
+  box-shadow: 0 25px 60px rgba(168, 85, 247, 0.35);
+}
+.reward-card.rarity-epic .rarity-badge {
+  background: rgba(168, 85, 247, 0.25);
+  color: #e9d5ff;
+  border: 1px solid rgba(168, 85, 247, 0.5);
+}
+
+.reward-card.rarity-legendary {
+  border-color: rgba(245, 158, 11, 0.7);
+  box-shadow: 0 30px 70px rgba(245, 158, 11, 0.45), 0 0 35px rgba(239, 68, 68, 0.25);
+}
+.reward-card.rarity-legendary .rarity-badge {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.3) 0%, rgba(239, 68, 68, 0.3) 100%);
+  color: #fef08a;
+  border: 1px solid var(--color-gold);
+}
+
+/* --------------------------------------------------------------------------
+   Footer
+   -------------------------------------------------------------------------- */
+.app-footer {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 2rem;
+  font-size: 0.8rem;
+  color: #64748b;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.test-reset-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  color: #cbd5e1;
+  padding: 0.35rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.test-reset-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+}
+
+/* --------------------------------------------------------------------------
+   Keyframe Animations
+   -------------------------------------------------------------------------- */
+@keyframes box-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes box-shake {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  20% { transform: translate(-2px, -1px) rotate(-1.5deg); }
+  40% { transform: translate(2px, 0px) rotate(1.5deg); }
+  60% { transform: translate(-1px, 2px) rotate(0deg); }
+  80% { transform: translate(2px, 1px) rotate(1deg); }
+  100% { transform: translate(-1px, -1px) rotate(-1deg); }
+}
+
+@keyframes spin-clockwise {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes spin-counter {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(-360deg); }
+}
+
+@keyframes pulse-gem {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.15); opacity: 1; }
+}
+
+@keyframes gem-glow {
+  from { box-shadow: 0 0 10px rgba(56, 189, 248, 0.5); }
+  to { box-shadow: 0 0 25px rgba(56, 189, 248, 1); }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --------------------------------------------------------------------------
+   Mobile Responsiveness
+   -------------------------------------------------------------------------- */
+@media (max-width: 600px) {
+  .app-header {
+    padding: 1rem 1.25rem;
+  }
+
+  .brand-title {
+    font-size: 1.3rem;
+  }
+
+  .box-viewport {
+    width: 290px;
+    height: 270px;
+  }
+
+  .chest-3d-wrapper {
+    transform: scale(0.85);
+  }
+
+  .chest-3d-wrapper:hover {
+    transform: scale(0.88);
+  }
+
+  .ring-outer { width: 240px; height: 240px; }
+  .ring-mid { width: 180px; height: 180px; }
+
+  .reward-card {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .card-media-wrapper {
+    height: 170px;
+  }
+
+  .reward-title {
+    font-size: 1.35rem;
+  }
+
+  .app-footer {
+    padding: 1rem 1.25rem;
+    flex-direction: column;
+    text-align: center;
+  }
+}

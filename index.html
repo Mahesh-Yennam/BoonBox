@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BoonBox — Daily Magic Box & Fortune</title>
+  <meta name="description" content="Unlock your daily magical boon: ancient treasures, mythical familiars, cosmic powers, and fortune blessings. Can only be opened once per day!">
+  
+  <!-- Google Fonts: Cinzel Decorative for fantasy titles, Outfit for clean modern UI -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Fullscreen Particle Effects Canvas -->
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- Ambient Light Orbs -->
+  <div class="ambient-glow glow-top-left"></div>
+  <div class="ambient-glow glow-bottom-right"></div>
+
+  <!-- Top Navigation / Header -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-gem">✦</div>
+      <h1 class="brand-title">BoonBox</h1>
+      <span class="brand-tag">Daily Oracle</span>
+    </div>
+    
+    <div class="header-controls">
+      <button id="sound-toggle-btn" class="icon-btn" title="Toggle Sound" aria-label="Toggle Sound">
+        <span id="sound-icon">🔊</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Experience Stage -->
+  <main class="magic-stage">
+    
+    <!-- Stage Heading & Prompt -->
+    <div class="stage-intro" id="stage-intro">
+      <p class="sub-headline">The Celestial Cache of Wonders</p>
+      <h2 class="main-prompt" id="main-prompt">Tap the BoonBox to claim today's fortune</h2>
+    </div>
+
+    <!-- 3D Interactive Chest Section -->
+    <div class="box-viewport" id="box-viewport">
+      
+      <!-- Multi-ring mystical floor aura -->
+      <div class="floor-aura-rings">
+        <div class="floor-shadow"></div>
+        <div class="aura-ring ring-outer"></div>
+        <div class="aura-ring ring-mid"></div>
+        <div class="aura-ring ring-inner"></div>
+      </div>
+
+      <!-- 3D Chest Container -->
+      <div class="chest-3d-wrapper" id="chest-wrapper" role="button" tabindex="0" aria-label="Open the Magic Box">
+        
+        <!-- The 3D Box Construction -->
+        <div class="box-mesh" id="box-mesh">
+          
+          <!-- Pillar of light radiating upward on open -->
+          <div class="light-pillar" id="light-pillar"></div>
+
+          <!-- Box Base (Bottom Solid Hull) -->
+          <div class="box-base">
+            
+            <!-- Front Face -->
+            <div class="face face-front">
+              <div class="gold-strap strap-left"></div>
+              <div class="gold-strap strap-right"></div>
+              <div class="metal-corner corner-tl"></div>
+              <div class="metal-corner corner-tr"></div>
+              <div class="metal-corner corner-bl"></div>
+              <div class="metal-corner corner-br"></div>
+              <div class="lock-plate">
+                <div class="lock-keyhole"></div>
+                <div class="rune-glyph">✦</div>
+              </div>
+            </div>
+
+            <!-- Back Face -->
+            <div class="face face-back">
+              <div class="gold-strap strap-left"></div>
+              <div class="gold-strap strap-right"></div>
+              <div class="hinge-bracket hinge-l"></div>
+              <div class="hinge-bracket hinge-r"></div>
+            </div>
+
+            <!-- Left Face -->
+            <div class="face face-left">
+              <div class="metal-corner corner-bl"></div>
+              <div class="metal-corner corner-br"></div>
+              <div class="chest-handle">
+                <div class="handle-ring"></div>
+              </div>
+            </div>
+
+            <!-- Right Face -->
+            <div class="face face-right">
+              <div class="metal-corner corner-bl"></div>
+              <div class="metal-corner corner-br"></div>
+              <div class="chest-handle">
+                <div class="handle-ring"></div>
+              </div>
+            </div>
+
+            <!-- Bottom Face -->
+            <div class="face face-bottom"></div>
+
+            <!-- Interior Tray (holds glowing crystal) -->
+            <div class="face face-interior">
+              <div class="core-crystal"></div>
+            </div>
+
+          </div>
+
+          <!-- Box Lid Hinge Pivot (Hinged at top-back edge of base) -->
+          <div class="lid-hinge" id="lid-hinge">
+            
+            <!-- Solid Closed Lid -->
+            <div class="box-lid" id="box-lid">
+              
+              <!-- Lid Top Face (Solid cap covering the box) -->
+              <div class="lid-face lid-face-top">
+                <div class="gold-strap strap-left"></div>
+                <div class="gold-strap strap-right"></div>
+                <div class="lid-crest">
+                  <span class="crest-rune">✧</span>
+                  <span class="crest-text">BOONBOX</span>
+                  <span class="crest-rune">✧</span>
+                </div>
+              </div>
+
+              <!-- Lid Front Face -->
+              <div class="lid-face lid-face-front">
+                <div class="gold-strap strap-left"></div>
+                <div class="gold-strap strap-right"></div>
+                <div class="lid-clasp">
+                  <div class="magic-gem" id="box-gem"></div>
+                </div>
+              </div>
+
+              <!-- Lid Back Face -->
+              <div class="lid-face lid-face-back">
+                <div class="gold-strap strap-left"></div>
+                <div class="gold-strap strap-right"></div>
+              </div>
+
+              <!-- Lid Left Face -->
+              <div class="lid-face lid-face-left">
+                <div class="metal-corner corner-tl"></div>
+              </div>
+
+              <!-- Lid Right Face -->
+              <div class="lid-face lid-face-right">
+                <div class="metal-corner corner-tr"></div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Cooldown State Banner (Shown when already opened today) -->
+      <div class="cooldown-panel hidden" id="cooldown-panel">
+        <div class="cooldown-badge">
+          <span class="cooldown-icon">⏳</span>
+          <span class="cooldown-label">Recharging Arcane Energy</span>
+        </div>
+        <p class="cooldown-desc">You have unlocked your daily blessing! The stars align again at midnight.</p>
+        <div class="countdown-timer" id="countdown-timer">--:--:--</div>
+        <div class="cooldown-actions">
+          <button class="view-reward-btn" id="view-today-btn">
+            <span>✨ View Today's Boon</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Instruction / Hint pill -->
+    <div class="hint-pill" id="hint-pill">
+      <span class="sparkle">✦</span>
+      <span id="hint-text">Available once every 24 hours</span>
+      <span class="sparkle">✦</span>
+    </div>
+
+  </main>
+
+  <!-- Modal: Reward Presentation Card -->
+  <div class="reward-modal-overlay hidden" id="reward-modal" role="dialog" aria-modal="true">
+    <div class="reward-modal-backdrop"></div>
+    <div class="reward-card" id="reward-card">
+      
+      <!-- Holographic card shine overlay -->
+      <div class="card-shine"></div>
+
+      <!-- Card Top: Rarity & Category -->
+      <div class="card-header">
+        <span class="rarity-badge" id="card-rarity">LEGENDARY</span>
+        <span class="card-category" id="card-category">Mythical Familiar</span>
+      </div>
+
+      <!-- Image Showcase -->
+      <div class="card-media-wrapper">
+        <img src="" alt="Reward Image" id="card-image" class="card-image" loading="lazy">
+        <div class="image-gradient-overlay"></div>
+        <div class="card-icon-floating" id="card-icon">🔥</div>
+      </div>
+
+      <!-- Card Content & Lore -->
+      <div class="card-body">
+        <h3 class="reward-title" id="card-title">Astral Solar Phoenix</h3>
+        <p class="reward-tagline" id="card-tagline">Guardian of Eternal Flames</p>
+        
+        <div class="reward-divider">
+          <span>✦ ✦ ✦</span>
+        </div>
+
+        <blockquote class="reward-quote" id="card-quote">
+          "From every ending springs an incandescent new beginning. Your strength shines through every shadow today."
+        </blockquote>
+
+        <div class="reward-stat-box">
+          <span class="stat-name" id="card-stat-label">Daily Boon Power</span>
+          <span class="stat-value" id="card-stat-value">+100% Rejuvenation</span>
+        </div>
+      </div>
+
+      <!-- Card Action -->
+      <div class="card-footer">
+        <button class="claim-btn" id="claim-btn">
+          <span>Accept Boon & Close</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer with Test Mode Button -->
+  <footer class="app-footer">
+    <div class="footer-note">Crafted with pure HTML, CSS & Web Audio • Zero Local Assets</div>
+    <button class="test-reset-btn" id="test-reset-btn" title="Clears localStorage cooldown for instant testing">
+      ⚡ Test Reset Cooldown
+    </button>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/audio.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/rewards.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
